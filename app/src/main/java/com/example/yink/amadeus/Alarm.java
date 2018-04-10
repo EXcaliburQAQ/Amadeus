@@ -12,7 +12,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-class Alarm {
+public class Alarm {
 
     private static MediaPlayer m;
     private static SharedPreferences settings;

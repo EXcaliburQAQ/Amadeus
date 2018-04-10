@@ -44,11 +44,8 @@ public class LangContext extends ContextWrapper {
             setSystemLocaleLegacy(config, locale);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            context = context.createConfigurationContext(config);
-        } else {
-            context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
-        }
+        context = context.createConfigurationContext(config);
+
         return new LangContext(context);
     }
 
@@ -65,11 +62,7 @@ public class LangContext extends ContextWrapper {
             setSystemLocaleLegacy(config, locale);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            context = context.createConfigurationContext(config);
-        } else {
-            context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
-        }
+        context = context.createConfigurationContext(config);
 
         return context;
     }

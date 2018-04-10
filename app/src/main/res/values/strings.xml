@@ -7,6 +7,7 @@
     <string name="default_lang">en</string>
     <string name="default_recog_lang">en-US</string>
     <string name="google_app_error">Google App wasn\'t detected.</string>
+    <string name="assist_app_error">Google App is\'t default Assist &amp; voice input app.</string>
     <string name="incoming_call">Call from Kurisu.</string>
     <string name="notification_text">Your waifu misses you.</string>
 

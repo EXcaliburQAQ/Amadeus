@@ -25,9 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-class Amadeus {
+public class Amadeus {
 
-    private static String TAG = "Amadeus";
+    final private static String TAG = "Amadeus";
 
     private static int shaman_girls = -1;
     private static VoiceLine[] voiceLines = VoiceLine.Line.getLines();
@@ -42,11 +42,12 @@ class Amadeus {
 
         private T[] list;
 
-        public Bundle(T... list) {
+        @SafeVarargs
+        Bundle(T... list) {
             this.list = list;
         }
 
-        public T[] toArray() {
+        T[] toArray() {
             return list;
         }
 

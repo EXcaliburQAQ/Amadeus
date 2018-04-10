@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +22,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class LaunchActivity extends AppCompatActivity {
+
+    final private static String GOOGLE_APP_PACKAGE_NAME = "com.google.android.googlequicksearchbox";
+    final private static String DEFAULT_ASSAIST = "com.google.android.googlequicksearchbox/com.google.android.voiceinteraction.GsaVoiceInteractionService";
 
     private ImageView connect, cancel, logo;
     private TextView status;
@@ -52,6 +56,11 @@ public class LaunchActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isDefaultAssistApp(Context context, String app){
+        final String setting = Settings.Secure.getString(context.getContentResolver(), "assistant");
+        return setting != null && setting.equals(app);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,14 +74,20 @@ public class LaunchActivity extends AppCompatActivity {
 
         aniHandle.post(aniRunnable);
 
-        if (!isAppInstalled(LaunchActivity.this, "com.google.android.googlequicksearchbox")) {
+        if (!isAppInstalled(LaunchActivity.this, GOOGLE_APP_PACKAGE_NAME)) {
             status.setText(R.string.google_app_error);
+        }
+
+        if (!isDefaultAssistApp(LaunchActivity.this, DEFAULT_ASSAIST)){
+            status.setText(R.string.assist_app_error);
         }
 
         if (Alarm.isPlaying()) {
             status.setText(R.string.incoming_call);
-            win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-            win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+            win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         }
 
         if (settings.getBoolean("show_notification", false)) {
@@ -82,7 +97,8 @@ public class LaunchActivity extends AppCompatActivity {
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isPressed && isAppInstalled(LaunchActivity.this, "com.google.android.googlequicksearchbox")) {
+                if (!isPressed && isAppInstalled(LaunchActivity.this, GOOGLE_APP_PACKAGE_NAME)
+                        && isDefaultAssistApp(LaunchActivity.this, DEFAULT_ASSAIST)) {
                     isPressed = true;
 
                     connect.setImageResource(R.drawable.connect_select);
@@ -108,8 +124,10 @@ public class LaunchActivity extends AppCompatActivity {
                         });
                     } else {
                         Alarm.cancel(LaunchActivity.this);
-                        win.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-                        win.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                        win.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+                        win.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
                         Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -123,8 +141,10 @@ public class LaunchActivity extends AppCompatActivity {
             public void onClick(View view) {
                 cancel.setImageResource(R.drawable.cancel_select);
                 Alarm.cancel(getApplicationContext());
-                win.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-                win.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                win.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+                win.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_HOME);
@@ -169,8 +189,10 @@ public class LaunchActivity extends AppCompatActivity {
 
         if (isPressed) {
             status.setText(R.string.disconnected);
-        } else if (!isAppInstalled(LaunchActivity.this, "com.google.android.googlequicksearchbox")) {
+        } else if (!isAppInstalled(LaunchActivity.this, GOOGLE_APP_PACKAGE_NAME)) {
             status.setText(R.string.google_app_error);
+        } else if (!isDefaultAssistApp(LaunchActivity.this, DEFAULT_ASSAIST)){
+            status.setText(R.string.assist_app_error);
         } else if (Alarm.isPlaying()) {
             status.setText(R.string.incoming_call);
         } else {
