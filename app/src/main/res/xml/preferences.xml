@@ -30,7 +30,7 @@
         <Preference android:title="@string/pref_alarm_setup">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="com.example.yink.amadeus"
+                android:targetPackage="com.fiepi.amadeus"
                 android:targetClass="com.example.yink.amadeus.AlarmActivity" />
         </Preference>
         <ListPreference
